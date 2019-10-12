@@ -27,6 +27,7 @@
       - awscli
       - sharutils
       - keepass2
+      - libreoffice
 
   - name: "Installing Python3 Packages"
     shell: pip3 install pyinstaller pipreqs truffleHog
