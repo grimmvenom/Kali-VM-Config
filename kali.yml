@@ -216,3 +216,12 @@
   
   - name: "Installing Frida"
     shell: pip3 install frida-tools frida
+    
+  - name: "Download MobSF: https://github.com/MobSF/Mobile-Security-Framework-MobSF"
+    git:
+      repo: https://github.com/MobSF/Mobile-Security-Framework-MobSF
+      dest: /opt/mobile/mobsf
+      
+    
+    
+    
