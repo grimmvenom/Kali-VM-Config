@@ -17,7 +17,7 @@
       - python3-pip
       - git
       - terminator
-      - alacarte
+      # - alacarte
       - htop
       - virtualbox-guest-x11
       - exiftool
@@ -27,60 +27,93 @@
       - awscli
       - sharutils
       - keepass2
+      - docker
       - libreoffice
+      - npm
 
   - name: "Installing Python3 Packages"
-    shell: pip3 install pyinstaller pipreqs truffleHog
-    #pip3:
-      #name:
-      #- pyinstaller
-      #- pipreqs
-      #- truffleHog
-
+    shell: pip3 install pyinstaller pipreqs truffleHog r3con1z3r
+  
+  #- name: "Enable Docker service, enable on startup, allow non-root user to run"
+  #  shell: "sudo systemctl start docker"
+  #  shell: "sudo systemctl enable docker"
+  #  shell: "sudo usermod -aG docker $USER"
+    
   # ==========================================================#
   # Nmap Scripts:
   # ==========================================================#
   - name: "Download nmap banner-plus.nse"
     get_url:
-      url: https://raw.githubusercontent.com/grimmvenom/infosec/master/Scripts/nmap_scripts/banner-plus.nse
+      url: https://raw.githubusercontent.com/grimmvenom/infosec/master/nmap_nse_scripts/banner-plus.nse
       dest: /usr/share/nmap/scripts/banner-plus.nse
       # mode: '0440'
 
   - name: "Download nmap ms15-034.nse"
     get_url:
-      url: https://raw.githubusercontent.com/grimmvenom/infosec/master/Scripts/nmap_scripts/ms15-034.nse
+      url: https://raw.githubusercontent.com/grimmvenom/infosec/master/nmap_nse_scripts/ms15-034.nse
       dest: /usr/share/nmap/scripts/ms15-034.nse
       # mode: '0440'
 
   - name: "Download nmap vmware-fingerprint.nse"
     get_url:
-      url: https://raw.githubusercontent.com/grimmvenom/infosec/master/Scripts/nmap_scripts/vmware-fingerprint.nse
+      url: https://raw.githubusercontent.com/grimmvenom/infosec/master/nmap_nse_scripts/vmware-fingerprint.nse
       dest: /usr/share/nmap/scripts/vmware-fingerprint.nse
+      # mode: '0440'
+      
+  - name: "Download nmap http-screenshot-html.nse"
+    get_url:
+      url: https://raw.githubusercontent.com/grimmvenom/infosec/master/nmap_nse_scripts/http-screenshot-html.nse
+      dest: /usr/share/nmap/scripts/http-screenshot-html.nse
       # mode: '0440'
 
   # ==========================================================#
   # Documentation:
   # ==========================================================#
+  
+  - name: "Make OWASP directory"
+    file:
+     path: /home/vagrant/Documents/owasp
+     state: directory
+     mode: 0755
+     group: vagrant
+     owner: vagrant
+    # when: stat_result.stat.exists == false
+  
   # Download OWASP ASVS Documentation:
   - name: "Download ASVS Documentation"
     git:
       repo: https://github.com/OWASP/ASVS
-      dest: /root/Documents/OWASP-ASVS
-
+      dest: /home/vagrant/Documents/owasp/owasp-ASVS
+  
+  # Download OWASP MASVS
+  - name: "Download OWASP MASVS"
+    git:
+      repo: https://github.com/OWASP/owasp-masvs
+      dest: /home/vagrant/Documents/owasp/owasp-masvs
+    
+  # Download OWASP Mobile Security Testing Guide
+  - name: "Download OWASP Mobiule Security Testing Guide"
+    git:
+      repo: https://github.com/OWASP/owasp-mstg
+      dest: /home/vagrant/Documents/owasp/owasp-mstg
+      
   # Download Cheatsheets / Notes:
   - name: "Download Awesome-Pentest-Cheat-Sheets"
     git:
       repo:  https://github.com/coreb1t/awesome-pentest-cheat-sheets
-      dest: /root/Documents/cheatsheets/
+      dest: /home/vagrant/Documents/cheatsheets/
+  
   # Download Wordlists
   - name: "Download SecLists Wordlists"
     git:
       repo: https://github.com/danielmiessler/SecLists
       dest: /usr/share/wordlists/SecLists
+      
   - name: "Download Awesome-Fuzzing Wordlists"
     git:
       repo:  https://github.com/secfigo/Awesome-Fuzzing
       dest: /usr/share/wordlists/Awesome-Fuzzing
+      
   - name: "Download Awesome-Hacking Wordlists"
     git:
       repo: https://github.com/Hack-with-Github/Awesome-Hacking
@@ -92,10 +125,10 @@
 
   # Arachni Scanner:  https://github.com/Arachni/arachni/releases/download/v1.5.1/arachni-1.5.1-0.5.12-linux-x86_64.tar.gz
 
-  - name: "Download EyeWitness: https://github.com/FortyNorthSecurity/EyeWitness"
+  - name: "Download GoWitness: https://github.com/sensepost/gowitness"
     git:
-      repo: https://github.com/FortyNorthSecurity/EyeWitness
-      dest: /opt/EyeWitness
+      repo: https://github.com/sensepost/gowitness.git
+      dest: /opt/goWitness
 
   - name: "Download WhatWeb:  https://github.com/urbanadventurer/WhatWeb.git"
     git:
@@ -116,11 +149,11 @@
     git:
       repo: https://github.com/aboul3la/Sublist3r.git
       dest: /opt/Sublist3r
-
-  - name: "Download R3con1z3r: https://github.com/abdulgaphy/r3con1z3r"
+  
+  - name: "Download Amass: https://github.com/OWASP/Amass"
     git:
-      repo: https://github.com/abdulgaphy/r3con1z3r
-      dest: /opt/reconizer
+      repo: https://github.com/OWASP/Amass
+      dest: /opt/amass
 
   - name: "Th3Inspecter: https://github.com/Moham3dRiahi/Th3inspector"
     git:
@@ -160,20 +193,26 @@
       repo: https://github.com/EmpireProject/Empire
       dest: /opt/PowerShell/Empire
 
-  - name: "Download PowerSploit: https://github.com/PowerShellMafia/PowerSploit/"
-    git:
-      repo: https://github.com/PowerShellMafia/PowerSploit
-      dest: /opt/PowerShell/PowerSploit
+  #- name: "Download PowerSploit: https://github.com/PowerShellMafia/PowerSploit/"
+  #  git:
+  #    repo: https://github.com/PowerShellMafia/PowerSploit
+  #    dest: /opt/PowerShell/PowerSploit
 
   - name: "Download PS DeathStar: https://github.com/byt3bl33d3r/DeathStar"
     git:
       repo: https://github.com/byt3bl33d3r/DeathStar
       dest: /opt/PowerShell/DeathStar
-
+      
+  
   # ==========================================================#
-  # Social Engineering / Phishing Tools
+  #  Mobile Pentesting Tools
   # ==========================================================#
-  # Phishery: https://github.com/ryhanson/phishery
-  #- git:
-  #    repo: https://github.com/ryhanson/phishery
-  #    dest: /opt/phishery
+  
+  - name: "Installing PassionFruit: https://github.com/chaitin/passionfruit"
+    shell: "npm install -g passionfruit"
+    
+  # Install ADB Platform Tools for android
+  # https://developer.android.com/studio/releases/platform-tools
+  
+  - name: "Installing Frida"
+    shell: pip3 install frida-tools frida

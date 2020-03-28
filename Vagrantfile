@@ -8,9 +8,13 @@
 # Every Vagrant development environment requires a box. You can search for
 # boxes at https://vagrantcloud.com/search.
 
+
+vagrant_synced_folder_default_type = ""
+
 Vagrant.configure("2") do |config|
   config.vm.define :silence do |vm_config|
     vm_config.vm.hostname = "Silence"
+	# https://www.kali.org/docs/introduction/default-credentials/
     vm_config.vm.box = "kalilinux/rolling"
     vm_config.vm.box_check_update = true
     vm_config.vm.boot_timeout = 120
@@ -26,13 +30,14 @@ Vagrant.configure("2") do |config|
     # Configure NIC
     vm_config.vm.network "public_network",
       use_dhcp_assigned_default_route: true,
-      bridge: "en0: Wi-Fi (AirPort)"
+      # bridge: "en0: Wi-Fi (AirPort)"
+	  bridge: "Ethernet adapter Ethernet"  # Windows
 
     # Suggest Adding Wait Timer before Ansible configuration
 
     # Run Ansible Configuration
     vm_config.vm.provision "ansible_local" do |ansible|
-      ansible.playbook = "kali-config.yml"
+      ansible.playbook = "kali.yml"
     end
 
   # vm_config.vm.provision :shell, :path => "bootstrap.sh"
