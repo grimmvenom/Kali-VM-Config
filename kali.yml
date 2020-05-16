@@ -113,7 +113,12 @@
     git:
       repo:  https://github.com/secfigo/Awesome-Fuzzing
       dest: /usr/share/wordlists/Awesome-Fuzzing
-
+      
+  - name: "Download Google's Fuzzing Wordlists"
+    git:
+      repo:  https://github.com/google/fuzzing/tree/master/dictionaries
+      dest: /usr/share/wordlists/Google-Fuzzing
+        
   - name: "Download Awesome-Hacking Wordlists"
     git:
       repo: https://github.com/Hack-with-Github/Awesome-Hacking
